@@ -1,0 +1,240 @@
+---
+templates:
+  page: |
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Visual media in 2023 that I have loved | Diana Bendun</title>
+        <style>{style}</style>
+      </head>
+      <body>
+        <div id="first_pane">
+          <header>
+            <h1>Visual media in 2023 that I fell in love with</h1>
+            <p>Click on any of them (or any category) to see more details, including small review and reception!</p>
+          </header>
+          <main>
+            {sections}
+          </main>
+        </div>
+        {details}
+      </body>
+    </html>
+  section: |
+    <section class="category{nth}">
+      <h2><a href="#{stub}">{title}</a></h2>
+      <div>
+        {media}
+      </div>
+    </section>
+  media: |
+    <a href="#{stub}"><img src="{poster}" alt="{title}"></a>
+  section_details: |
+    <article id="{stub}">
+      <h2>{title}</h2>
+      {media}
+    </article>
+  media_details:
+    - if contains:
+      - review
+      template: |
+        <section id="{stub}">
+          <h3>{title}</h3>
+          <p>{review}</p>
+        </section>
+    - if contains: []
+      template: |
+        <section id="{stub}">
+          <h3>{title}</h3>
+          <p>review to be added. this template should be remove when we hit 1.0</p>
+        </section>
+
+style: |
+  @font-face {
+    font-family: "Josefin Sans";
+    src: url("./JosefinSans-VariableFont_wght.ttf");
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+  }
+  #first_pane {
+    font-family: "Josefin Sans", sans-serif;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+
+    background: rgb(113,85,49);
+    background: radial-gradient(circle, rgba(113,85,49,1) 82%, rgba(75,54,33,1) 100%);
+  }
+
+  h1 {
+    text-align: center;
+    text-shadow: #FC0 5px 0 0.5em;
+  }
+
+  #first_pane header {
+    text-align: center;
+  }
+
+  main {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2em;
+    align-content: center;
+  }
+
+  main h2 {
+    text-align: center;
+    border-bottom: 3px solid white;
+    border-radius: 5px;
+    text-shadow: #FC0 0 0 0.1em;
+  }
+
+  main section a:link,
+  main section a:hover,
+  main section a:visited {
+    color: white;
+    text-decoration: none;
+  }
+
+  main section div {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5em;
+  }
+
+  main section div img {
+    width: 100%;
+    filter: sepia(90%) brightness(50%);
+    transition: filter ease-in-out 300ms;
+  }
+
+  main section:hover div img {
+    filter: sepia(15%) brightness(75%);
+  }
+
+  main section div img:hover,
+  main section div img:focus {
+    filter: none;
+    cursor: pointer;
+  }
+
+
+  @media screen and (max-width: 768px) {
+    main {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media screen and (min-width: 769px) {
+    main {
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+    .category4 { grid-column: 2; grid-row: 2 }
+    .category5 { grid-column: 3; grid-row: 2 }
+  }
+
+
+media:
+- title: Live action movies
+  stub: live-action-movies
+  entries:
+  - title: John Wick 4
+    poster: ./john-wick_4.jpg
+    stub: john-wick-4
+  - title: Oppenhaimer
+    poster: ./oppenhaimer.jpg
+    stub: oppenhaimer
+  - title: Godzilla Minus One
+    poster: ./godzilla-minus-one.jpg
+    stub: godzilla-minus-one
+- title: Animated movies
+  stub: animated-movies
+  entries:
+  - title: Chłopi
+    imdb: tt10651230
+    poster: ./the-peasants.jpg
+    stub: the-peasants
+    review:
+      This movie was a huge suprise.
+      I went for the show, the beutifully painted landscapes among other treats for eyes but stayed for a story that held firm grip upon me.
+      The intersectional discussion of power and influence that forms the society of the villege is trurly fascinating.
+      <br />
+      Besides the strong message, the journy that The Peasants will take you through the live of the village across the seasons is breathtaking.
+      The film is beutifull both in grand landscape paintings and in smaller ones like villigers working on sauerkraut with loughs and music.
+      <br />
+      The Peasants delivers the expirience of polish village in 18th ceuntry perfectly, especially in locality of the person expirience.
+      We don't come out of the villege, we are bounded to it just like the villagers.
+      The world outside may not even exists, all the story is here and now.
+  - title: "Spider-Man: Across the Spiderverse"
+    stub: spiderverse
+    poster: ./spider-man-across-the-spiderverse.jpg
+  - title: Nimona
+    stub: nimona
+    poster: ./nimona.jpg
+- title: Live action series
+  stub: live-action-series
+  entries:
+    - title: GenV
+      stub: genv
+      poster: ./genv.jpg
+    - title: One Piece
+      stub: one-piece
+      poster: ./one-piece.jpg
+    - title: The Fall of the Hause of Usher
+      stub: the-fall-of-the-hause-of-usher
+      poster: ./the-fall-of-the-house-of-usher.jpg
+- title: Animated series
+  stub: animated-series
+  entries:
+    - title: "Capitan Laserhawk: A Blood Dragon Remix"
+      stub: capitan-laserhawk-a-blood-dragon-remix
+      poster: ./capitan-laserhawk-a-blood-dragon-remix.jpg
+    - title: Scott Pilgrim Takes Off
+      stub: scott-pilgrim-takes-off
+      poster: ./scott-pilgrim-takes-off.jpg
+    - title: Blue Eye Samurai
+      stub: blue-eye-samurai
+      poster: ./blue-eye-samurai.jpg
+- title: Sad to see go away
+  stub: sad-to-see-go-away
+  entries:
+    - title: Riverdale
+      stub: riverdale
+      poster: ./riverdale.jpg
+    - title: The Flash
+      stub: flash
+      poster: ./the-flash.jpg
+    - title: Doom Patrol
+      stub: doom-patrol
+      poster: ./doom-patrol.jpg
+- title: Suprises
+  stub: suprises
+  entries:
+    - title: Mamma Mia! Here we go again
+      stub: mamma-mia-here-we-go-again
+      poster: ./mamma-mia-here-we-go-again.jpg
+    - title: Community
+      stub: community
+      poster: ./community.jpg
+    - title: Doctor Who # TODO: Still thinking about this one
+      stub: doctor-who
+      poster: ./doctor-who.jpg
+
+# Future posts:
+#   American Gods vs Percy Jackson
+#   Doctor Who
+#   Fear of God: Mission Impossible Dead Reckoning Part One, Godzilla
+
+
+
