@@ -1,4 +1,6 @@
 ---
+common:
+  page_title: "What made an impact on me in 2023?"
 templates:
   page: |
     <!DOCTYPE html>
@@ -6,55 +8,64 @@ templates:
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Visual media in 2023 that I have loved | Diana Bendun</title>
+        <title>{page_title} | Diana Bendun</title>
         <style>{style}</style>
       </head>
       <body>
         <div id="first_pane">
           <header>
-            <h1>Visual media in 2023 that I fell in love with</h1>
-            <p>Click on any of them (or any category) to see more details, including small review and reception!</p>
+            <h1>{page_title}</h1>
+            <p>Scroll down to see more or click on any of them to see info on specific one!</p>
           </header>
-          <main>
-            {sections}
-          </main>
+          <nav>
+            {posters}
+          </nav>
         </div>
-        {details}
+        <main>
+          <section id="about">
+            <h2>About</h2>
+            <p>
+              This is a place for celebration of all the media that suprised me, changed me or impressed me in 2023.
+              The requirements that all of them must pass: polish premiere in 2023 (including season premieres!) and by somewhat important for me.
+              Not all outstanding cinematography from this year made to the list - I either didn't watch it yet or didn't have anything to tell about them.
+            </p>
+            <p>
+              This list is incredibly personal and thus it may contain opinions that are rather short-lived.
+              It is for my celebration of getting more media literate over last year.
+            </p>
+          </section>
+          <section class="reviews">
+            <h2>Reviews</h2>
+            {details}
+          </section>
+        </main>
       </body>
     </html>
-  section: |
-    <section class="category{nth}">
-      <h2><a href="#{stub}">{title}</a></h2>
-      <div>
-        {media}
-      </div>
-    </section>
-  media: |
+  poster: |
     <a href="#{stub}"><img src="{poster}" alt="{title}"></a>
-  section_details: |
-    <article id="{stub}">
-      <h2>{title}</h2>
-      {media}
-    </article>
-  media_details:
-    - if contains:
-      - review
-      template: |
-        <section id="{stub}">
+  details:
+    defaults:
+      review: review to be added. this shouldn't be in 1.0
+      external: ""
+    template: |
+      <section id="{stub}">
+        <img src="{poster}" alt="Poster of {title}" />
+        <div class="review">
           <h3>{title}</h3>
-          <p>{review}</p>
-        </section>
-    - if contains: []
-      template: |
-        <section id="{stub}">
-          <h3>{title}</h3>
-          <p>review to be added. this template should be remove when we hit 1.0</p>
-        </section>
+          {review}
+          {external}
+        </div>
+      </section>
+  external: |
+    <li><a href="{url}">{title}</a></li>
 
 style: |
   @font-face {
     font-family: "Josefin Sans";
     src: url("./JosefinSans-VariableFont_wght.ttf");
+  }
+  html {
+    scroll-behaviour: smooth;
   }
   * {
     box-sizing: border-box;
@@ -64,8 +75,10 @@ style: |
     padding: 0;
     font-family: sans-serif;
   }
-  #first_pane {
+  h1, h2, h3, h4 {
     font-family: "Josefin Sans", sans-serif;
+  }
+  #first_pane {
     color: white;
     min-height: 100vh;
     display: flex;
@@ -85,151 +98,120 @@ style: |
     text-align: center;
   }
 
-  main {
+  nav {
+    /*
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2em;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    justify-content: center;
     align-content: center;
+    justify-items: center;
+    align-items: center;
+    gap: 1.5em;
+      */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 1.5em;
   }
 
-  main h2 {
-    text-align: center;
-    border-bottom: 3px solid white;
-    border-radius: 5px;
-    text-shadow: #FC0 0 0 0.1em;
+  nav > a {
+    width: minmax(300px, 0.125vw);
   }
 
-  main section a:link,
-  main section a:hover,
-  main section a:visited {
-    color: white;
-    text-decoration: none;
-  }
-
-  main section div {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5em;
-  }
-
-  main section div img {
-    width: 100%;
-    filter: sepia(90%) brightness(50%);
+  nav img {
+    min-width: 180px;
+    max-width: 0.25vw;
+    filter: contrast(50%) sepia(90%) brightness(50%);
     transition: filter ease-in-out 300ms;
   }
-
-  main section:hover div img {
-    filter: sepia(15%) brightness(75%);
-  }
-
-  main section div img:hover,
-  main section div img:focus {
+  nav a img:hover,
+  nav a img:focus {
     filter: none;
     cursor: pointer;
   }
 
-
-  @media screen and (max-width: 768px) {
-    main {
-      grid-template-columns: 1fr;
-    }
+  #about, .review {
+    max-width: 40em;
   }
-
-  @media screen and (min-width: 769px) {
-    main {
-      padding-left: 1em;
-      padding-right: 1em;
-    }
-    .category4 { grid-column: 2; grid-row: 2 }
-    .category5 { grid-column: 3; grid-row: 2 }
+  #about {
+    margin: auto;
   }
-
+  main h2 {
+    text-align: center;
+  }
+  .reviews > section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+  }
+  .review {
+    margin: 1em;
+  }
 
 media:
-- title: Live action movies
-  stub: live-action-movies
-  entries:
-  - title: John Wick 4
-    poster: ./john-wick_4.jpg
-    stub: john-wick-4
-  - title: Oppenhaimer
-    poster: ./oppenhaimer.jpg
-    stub: oppenhaimer
-  - title: Godzilla Minus One
-    poster: ./godzilla-minus-one.jpg
-    stub: godzilla-minus-one
-- title: Animated movies
-  stub: animated-movies
-  entries:
-  - title: Chłopi
-    imdb: tt10651230
-    poster: ./the-peasants.jpg
-    stub: the-peasants
-    review:
-      This movie was a huge suprise.
-      I went for the show, the beutifully painted landscapes among other treats for eyes but stayed for a story that held firm grip upon me.
-      The intersectional discussion of power and influence that forms the society of the villege is trurly fascinating.
-      <br />
-      Besides the strong message, the journy that The Peasants will take you through the live of the village across the seasons is breathtaking.
-      The film is beutifull both in grand landscape paintings and in smaller ones like villigers working on sauerkraut with loughs and music.
-      <br />
-      The Peasants delivers the expirience of polish village in 18th ceuntry perfectly, especially in locality of the person expirience.
-      We don't come out of the villege, we are bounded to it just like the villagers.
-      The world outside may not even exists, all the story is here and now.
-  - title: "Spider-Man: Across the Spiderverse"
-    stub: spiderverse
-    poster: ./spider-man-across-the-spiderverse.jpg
-  - title: Nimona
-    stub: nimona
-    poster: ./nimona.jpg
-- title: Live action series
-  stub: live-action-series
-  entries:
-    - title: GenV
-      stub: genv
-      poster: ./genv.jpg
-    - title: One Piece
-      stub: one-piece
-      poster: ./one-piece.jpg
-    - title: The Fall of the Hause of Usher
-      stub: the-fall-of-the-hause-of-usher
-      poster: ./the-fall-of-the-house-of-usher.jpg
-- title: Animated series
-  stub: animated-series
-  entries:
-    - title: "Capitan Laserhawk: A Blood Dragon Remix"
-      stub: capitan-laserhawk-a-blood-dragon-remix
-      poster: ./capitan-laserhawk-a-blood-dragon-remix.jpg
-    - title: Scott Pilgrim Takes Off
-      stub: scott-pilgrim-takes-off
-      poster: ./scott-pilgrim-takes-off.jpg
-    - title: Blue Eye Samurai
-      stub: blue-eye-samurai
-      poster: ./blue-eye-samurai.jpg
-- title: Sad to see go away
-  stub: sad-to-see-go-away
-  entries:
-    - title: Riverdale
-      stub: riverdale
-      poster: ./riverdale.jpg
-    - title: The Flash
-      stub: flash
-      poster: ./the-flash.jpg
-    - title: Doom Patrol
-      stub: doom-patrol
-      poster: ./doom-patrol.jpg
-- title: Suprises
-  stub: suprises
-  entries:
-    - title: Mamma Mia! Here we go again
-      stub: mamma-mia-here-we-go-again
-      poster: ./mamma-mia-here-we-go-again.jpg
-    - title: Community
-      stub: community
-      poster: ./community.jpg
-    - title: Doctor Who # TODO: Still thinking about this one
-      stub: doctor-who
-      poster: ./doctor-who.jpg
+- title: Chłopi
+  imdb: tt10651230
+  poster: ./the-peasants.jpg
+  stub: the-peasants
+  review:
+    <p>
+    This movie was a huge suprise.
+    I went for the show, the beutifully painted landscapes among other treats for eyes but stayed for a story that held firm grip upon me.
+    The intersectional discussion of power and influence that forms the society of the villege is trurly fascinating.
+    </p><p>
+    Besides the strong message, the journy that The Peasants will take you through the live of the village across the seasons is breathtaking.
+    The film is beutifull both in grand landscape paintings and in smaller ones like villigers working on sauerkraut with loughs and music.
+    </p><p>
+    The Peasants delivers the expirience of polish village in 18th ceuntry perfectly, especially in locality of the person expirience.
+    We don't come out of the villege, we are bounded to it just like the villagers.
+    The world outside may not even exists, all the story is here and now.
+    </p>
+  external:
+    - title: '"Chłopi - wir samotnych dusz" SztywnyPatyk'
+      url: https://www.youtube.com/watch?v=f4o4lmal904
+- title: Nimona
+  stub: nimona
+  poster: ./nimona.jpg
+- title: GenV
+  stub: genv
+  poster: ./genv.jpg
+- title: Blue Eye Samurai
+  stub: blue-eye-samurai
+  poster: ./blue-eye-samurai.jpg
+- title: John Wick 4
+  poster: ./john-wick_4.jpg
+  stub: john-wick-4
+- title: Beautiful Disaster
+  imdb: tt2316548
+  stub: beautiful-disaster
+  poster: ./beautiful-disaster.jpg
+- title: Oppenhaimer
+  poster: ./oppenhaimer.jpg
+  stub: oppenhaimer
+- title: "Spider-Man: Across the Spiderverse"
+  stub: spiderverse
+  poster: ./spider-man-across-the-spiderverse.jpg
+- title: One Piece
+  stub: one-piece
+  poster: ./one-piece.jpg
+- title: The Fall of the Hause of Usher
+  stub: the-fall-of-the-hause-of-usher
+  poster: ./the-fall-of-the-house-of-usher.jpg
+- title: "Capitan Laserhawk: A Blood Dragon Remix"
+  stub: capitan-laserhawk-a-blood-dragon-remix
+  poster: ./capitan-laserhawk-a-blood-dragon-remix.jpg
+- title: Riverdale
+  stub: riverdale
+  poster: ./riverdale.jpg
+- title: Doom Patrol
+  stub: doom-patrol
+  poster: ./doom-patrol.jpg
+  # TODO: Mention Flash here
 
 # Future posts:
 #   American Gods vs Percy Jackson

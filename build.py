@@ -1,38 +1,33 @@
 import subprocess
 import yaml
 import textwrap
+import dataclasses
+import typing
 
-def render_sections(templates, sections):
+def render_posters(data):
+    poster_template = data["templates"]["poster"]
+    return "\n".join(poster_template.format(**m) for m in data["media"])
+
+def render_details(data):
     result = ""
-    section_template = templates["section"]
-    media_template = templates["media"]
+    media_template = data["templates"]["details"]
+    external_template = data["templates"]["external"]
+    postprocessed = {}
 
-    for nth, section in enumerate(sections):
-        media = ""
-        for entry in section["entries"]:
-            media += media_template.format(**entry)
-        result += section_template.format(**section, media = media, nth = nth)
+    for media in data["media"]:
+        assert isinstance(media_template, dict)
 
-    return result
+        external = ''.join(external_template.format(**external) for external in media.get("external", []))
+        if external:
+            external = f"<h4>See more</h4><ul>{external}</ul>"
+            postprocessed["external"] = external
 
-def render_details(templates, sections):
-    result = ""
-    section_template = templates["section_details"]
-    media_template = templates["media_details"]
-
-    for section in sections:
-        media = ""
-        for entry in section["entries"]:
-            if isinstance(media_template, list):
-                for template in media_template:
-                    if all(requirement in entry.keys() for requirement in template["if contains"]):
-                        media += template["template"].format(**entry)
-                        break
-                else:
-                    raise NotImplementedError("what if we don't find template that matches requirements?")
-            else:
-                media += media_template.format(**entry)
-        result += section_template.format(**section, media = media)
+        result += media_template["template"].format(**{
+            **data["common"],
+            **media_template["defaults"],
+            **media,
+            **postprocessed,
+        })
 
     return result
 
@@ -41,15 +36,14 @@ def main():
     with open('./data.yml') as f:
         data = yaml.safe_load(f)
 
-    templates, media, style = data["templates"], data["media"], data["style"]
-
-    sections = render_sections(templates, media)
-    details = render_details(templates, media)
-    print(templates["page"].format(**{
-        "sections": sections,
-        "details": details,
-        "style": data["style"],
-    }))
+    posters = render_posters(data)
+    details = render_details(data)
+    print(data["templates"]["page"].format(
+        **data["common"],
+        posters = posters,
+        details = details,
+        style = data["style"],
+    ))
 
 
 if __name__ == "__main__":
